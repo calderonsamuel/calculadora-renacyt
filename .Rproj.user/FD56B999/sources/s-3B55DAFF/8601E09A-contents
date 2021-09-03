@@ -1,0 +1,24 @@
+asesoria_UI <- function(id) {
+    ns <- NS(id)
+    tagList(
+        
+    )
+}
+
+asesoria_Server <- function(id) {
+    moduleServer(id, function(input, output, session) {
+        
+})  
+}
+
+asesoria_App <- function(){
+    ui <- fluidPage(
+        asesoria_UI("myTestId")
+)   
+    server <- function(input, output, session) {
+    asesoria_Se rver("myTestId")
+    }
+    shinyApp(ui, server)
+}   
+
+# asesoria_App()    
