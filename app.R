@@ -4,7 +4,20 @@ library(flextable)
 
 ui <- navbarPage(
     title = "Calculadora RENACYT",
-    theme = bslib::bs_theme(version = 4, bootswatch = "minty"),
+    theme = bslib::bs_theme(version = 4, 
+                            bootswatch = "minty",
+                            "link-color" = "#770",
+                            "link-hover-color" = "#AA6",
+                            primary = "#707070",
+                            bg = "#f6f4f3",
+                            fg = "black",
+                            "navbar-light-bg" = "#f6eee9",
+                            "navbar-light-active-color" = "maroon",
+                            "navbar-light-hover-color" = "#FF3333",
+                            "navbar-light-brand-color" = "maroon",
+                            "component-active-bg" = "#e6ded9",
+                            "navbar-brand-font-size" = "1.75rem"
+                            ),
     tabPanel(
         title = "Inicio",
         navlistPanel(
