@@ -3,6 +3,7 @@ library(tidyverse)
 library(flextable)
 
 ui <- navbarPage(
+    tags$head(includeHTML(("google-analytics.html"))),
     title = "Calculadora RENACYT",
     theme = bslib::bs_theme(version = 4, 
                             bootswatch = "minty",
