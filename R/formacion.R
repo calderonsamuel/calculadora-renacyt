@@ -1,8 +1,8 @@
 formacion_UI <- function(id) {
-    ns <- NS(id)
-    tagList(
-        tags$h4("A. Grado académico (registrado en SUNEDU o MINEDU)"),
-        selectInput(inputId = ns("grado"), 
+    ns <- shiny::NS(id)
+    shiny::tagList(
+        shiny::tags$h4("A. Grado académico (registrado en SUNEDU o MINEDU)"),
+        shiny::selectInput(inputId = ns("grado"), 
                     label = NULL, 
                     choices = c("Doctor", 
                                 "Magister", 
@@ -15,11 +15,11 @@ formacion_UI <- function(id) {
 }
 
 formacion_Server <- function(id) {
-    moduleServer(id, function(input, output, session) {
-        puntaje <- reactive({
+    shiny::moduleServer(id, function(input, output, session) {
+        puntaje <- shiny::reactive({
             grado <- input$grado
             
-            case_when(
+            dplyr::case_when(
                 grado == "Doctor" ~ 10,
                 grado == "Magister" ~ 6,
                 grado ==  "Título profesional"~ 4,
@@ -30,21 +30,21 @@ formacion_Server <- function(id) {
         })
         
         list(
-            grado = reactive(input$grado),
-            puntaje_grado = reactive(puntaje())
+            grado = shiny::reactive(input$grado),
+            puntaje_grado = shiny::reactive(puntaje())
         )
         
     })
 }
 
 formacion_App <- function(){
-    ui <- fluidPage(
+    ui <- shiny::fluidPage(
         formacion_UI("myTestId")
     )
     server <- function(input, output, session) {
         formacion_Server("myTestId")
     }
-    shinyApp(ui, server)
+    shiny::shinyApp(ui, server)
 }
 
 # formacion_App()

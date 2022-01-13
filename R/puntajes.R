@@ -1,16 +1,16 @@
 puntajes_input <- function(id) {
-    ns <- NS(id)
-    tagList(
-        tabsetPanel(
-            tabPanel(
+    ns <- shiny::NS(id)
+    shiny::tagList(
+        shiny::tabsetPanel(
+            shiny::tabPanel(
                 title = "Formación",
                 formacion_UI(ns("formacion"))
             ),
-            tabPanel(
+            shiny::tabPanel(
                 title = "Producción",
                 produccion_UI(ns("produccion"))
             ),
-            tabPanel(
+            shiny::tabPanel(
                 title = "Asesoría",
                 asesoria_UI(ns("asesoria"))
             )
@@ -19,26 +19,26 @@ puntajes_input <- function(id) {
 }
 
 puntajes_output <- function(id) {
-    ns <- NS(id)
-    tagList(
-        tags$h2("Puntaje obtenido"),
-        uiOutput(ns("resultados")),
-        tags$h2("Calificación"),
-        textOutput(ns("calificacion")),
-        tags$p("Considerar que para que el registro prospere se requiere al menos un item de producción en los últimos tres años")
+    ns <- shiny::NS(id)
+    shiny::tagList(
+        shiny::tags$h2("Puntaje obtenido"),
+        shiny::uiOutput(ns("resultados")),
+        shiny::tags$h2("Calificación"),
+        shiny::textOutput(ns("calificacion")),
+        shiny::tags$p("Considerar que para que el registro prospere se requiere al menos un item de producción en los últimos tres años")
     )
 }
 
 puntajes_Server <- function(id) {
-    moduleServer(id, function(input, output, session) {
+    shiny::moduleServer(id, function(input, output, session) {
         
         formacion <- formacion_Server("formacion")
         produccion <- produccion_Server("produccion")
         asesoria <- asesoria_Server("asesoria")
         
-        puntaje_formacion <- reactive(formacion$puntaje_grado())
+        puntaje_formacion <- shiny::reactive(formacion$puntaje_grado())
         
-        puntaje_produccion <- reactive({
+        puntaje_produccion <- shiny::reactive({
             articulos <- produccion$puntaje_articulos()
             patentes <- produccion$puntaje_patentes()
             libros <- produccion$puntaje_libros()
@@ -48,12 +48,17 @@ puntajes_Server <- function(id) {
         
         puntaje_asesoria <- reactive(asesoria$puntaje_asesoria())
         
-        puntaje_total <- reactive(puntaje_formacion() + 
+        puntaje_total <- shiny::reactive(puntaje_formacion() + 
                                       puntaje_produccion() + 
                                       puntaje_asesoria())
         
-        data_resultados <- reactive({
-            tribble(
+        data_resultados <- shiny::reactive({
+            
+            # data.frame(
+            #     Criterio = c("Formación", "Producción total", "Asesoría", "Total"),
+            #     Puntaje = c(puntaje_formacion(), puntaje_produccion(), puntaje_asesoria(), puntaje_total())
+            # )
+            dplyr::tribble(
                 ~"Criterio", ~"Puntaje",
                 "Formación", puntaje_formacion(),
                 "Producción total", puntaje_produccion(),
@@ -62,8 +67,8 @@ puntajes_Server <- function(id) {
             )
         })
         
-        calificacion <- reactive({
-            case_when(
+        calificacion <- shiny::reactive({
+            dplyr::case_when(
                 puntaje_produccion() == 0 ~ "No califica: Requiere al menos un ítem en Producción",
                 puntaje_formacion() == 1 & puntaje_produccion() < 9 ~ "No califica: Estudiantes requieren 9 en producción",
                 puntaje_formacion() > 1 & puntaje_produccion() < 6  ~ "No califica: Requiere al menos 6 en producción",
@@ -80,34 +85,35 @@ puntajes_Server <- function(id) {
             )
         })
         
-        output$resultados <- renderUI({
-            data_resultados() %>% 
-                flextable() %>% 
-                theme_box() %>% 
-                set_table_properties("autofit") %>% 
-                htmltools_value()
+        output$resultados <- shiny::renderUI({
+            tmp <- data_resultados()
+            tmp <- flextable::flextable(tmp) 
+            tmp <- flextable::theme_box(tmp)  
+            tmp <- flextable::set_table_properties(tmp, layout = "autofit") 
+            tmp <- flextable::htmltools_value(tmp)
+            tmp
         })
         
-        output$calificacion <- renderText(calificacion())
+        output$calificacion <- shiny::renderText(calificacion())
     })
 }
 
 puntajes_App <- function(){
-    ui <- fluidPage(
-                sidebarLayout(
-                        sidebarPanel(
-                                puntajes_input("myTestId")
-                        ),
-                        mainPanel(
-                                puntajes_output("myTestId")
-                        )
-                )
+    ui <- shiny::fluidPage(
+        shiny::sidebarLayout(
+            shiny::sidebarPanel(
+                puntajes_input("myTestId")
+            ),
+            shiny::mainPanel(
+                puntajes_output("myTestId")
+            )
+        )
     )
     
     server <- function(input, output, session) {
         puntajes_Server("myTestId")
     }
-    shinyApp(ui, server)
+    shiny::shinyApp(ui, server)
 }
 
 # puntajes_App()

@@ -1,9 +1,9 @@
-library(shiny)
-library(tidyverse)
-library(flextable)
+# library(shiny)
+# library(tidyverse)
+# library(flextable)
 
-ui <- navbarPage(
-    tags$head(includeHTML(("google-analytics.html"))),
+ui <- shiny::navbarPage(
+    shiny::tags$head(includeHTML(("google-analytics.html"))),
     title = "Calculadora RENACYT",
     theme = bslib::bs_theme(version = 4, 
                             bootswatch = "minty",
@@ -19,19 +19,19 @@ ui <- navbarPage(
                             "component-active-bg" = "#e6ded9",
                             "navbar-brand-font-size" = "1.75rem"
                             ),
-    tabPanel(
+    shiny::tabPanel(
         title = "Inicio",
-        navlistPanel(
-            tabPanel(
+        shiny::navlistPanel(
+            shiny::tabPanel(
                 title = "Presentación",
                 tags$h2("Calculadora de calificación RENACYT"),
                 includeMarkdown("presentacion.Rmd")
             ),
-            tabPanel(
+            shiny::tabPanel(
                 title = "Sobre la calculadora",
                 includeMarkdown("sobre-calculadora.Rmd")
             ),
-            tabPanel(
+            shiny::tabPanel(
                 title = "Sobre el autor",
                 includeMarkdown("sobre-autor.Rmd")
             )
@@ -39,11 +39,11 @@ ui <- navbarPage(
     ),
     tabPanel(
         title = "Calculadora",
-        sidebarLayout(
-            sidebarPanel(
+        shiny::sidebarLayout(
+            shiny::sidebarPanel(
                 puntajes_input("puntajes")
             ),
-            mainPanel(
+            shiny::mainPanel(
                 puntajes_output("puntajes")
             )
         )
@@ -54,4 +54,4 @@ server <- function(input, output, session) {
     puntajes_Server("puntajes")
 }
 
-shinyApp(ui, server)
+shiny::shinyApp(ui, server)
