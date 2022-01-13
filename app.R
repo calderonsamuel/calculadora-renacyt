@@ -3,8 +3,9 @@
 # library(flextable)
 
 ui <- shiny::navbarPage(
-    shiny::tags$head(includeHTML(("google-analytics.html"))),
+    shiny::tags$head(shiny::includeHTML(("google-analytics.html"))),
     title = "Calculadora RENACYT",
+    selected = "inicio",
     theme = bslib::bs_theme(version = 4, 
                             bootswatch = "minty",
                             "link-color" = "#770",
@@ -20,20 +21,21 @@ ui <- shiny::navbarPage(
                             "navbar-brand-font-size" = "1.75rem"
                             ),
     shiny::tabPanel(
-        title = "Inicio",
+        title = "Inicio", 
+        value = "inicio",
         shiny::navlistPanel(
             shiny::tabPanel(
                 title = "Presentación",
-                tags$h2("Calculadora de calificación RENACYT"),
-                includeMarkdown("presentacion.Rmd")
+                shiny::tags$h2("Calculadora de calificación RENACYT"),
+                shiny::includeMarkdown("presentacion.Rmd")
             ),
             shiny::tabPanel(
                 title = "Sobre la calculadora",
-                includeMarkdown("sobre-calculadora.Rmd")
+                shiny::includeMarkdown("sobre-calculadora.Rmd")
             ),
             shiny::tabPanel(
                 title = "Sobre el autor",
-                includeMarkdown("sobre-autor.Rmd")
+                shiny::includeMarkdown("sobre-autor.Rmd")
             )
         )
     ),
