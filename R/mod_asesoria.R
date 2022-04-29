@@ -1,4 +1,4 @@
-asesoria_UI <- function(id) {
+mod_asesoria_UI <- function(id) {
     ns <- shiny::NS(id)
     shiny::tagList(
         shiny::tags$h4("F. Haber asesorado o co-asesorado tesis sustentadas y aprobadas"),
@@ -8,7 +8,7 @@ asesoria_UI <- function(id) {
     )
 }
 
-asesoria_Server <- function(id) {
+mod_asesoria_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
         puntaje_asesoria <- shiny::reactive({
             puntaje <- (input$doctor * 2) + (input$magister * 1) + (input$bachiller * 0.5)
@@ -21,16 +21,16 @@ asesoria_Server <- function(id) {
     })
 }
 
-asesoria_App <- function(){
+mod_asesoria_App <- function(){
     ui <- shiny::fluidPage(
-        asesoria_UI("myTestId"),
+        mod_asesoria_UI("myTestId"),
         shiny::textOutput("test")
     )
     server <- function(input, output, session) {
-        asesoria <- asesoria_Server("myTestId")
+        asesoria <- mod_asesoria_Server("myTestId")
         output$test <- shiny::renderText(asesoria$puntaje_asesoria())
     }
     shiny::shinyApp(ui, server)
 }
 
-# asesoria_App()
+# mod_asesoria_App()
