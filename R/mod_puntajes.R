@@ -1,24 +1,24 @@
-puntajes_input <- function(id) {
+mod_puntajes_input <- function(id) {
     ns <- shiny::NS(id)
     shiny::tagList(
         shiny::tabsetPanel(
             shiny::tabPanel(
                 title = "Formación",
-                formacion_UI(ns("formacion"))
+                mod_formacion_UI(ns("formacion"))
             ),
             shiny::tabPanel(
                 title = "Producción",
-                produccion_UI(ns("produccion"))
+                mod_produccion_UI(ns("produccion"))
             ),
             shiny::tabPanel(
                 title = "Asesoría",
-                asesoria_UI(ns("asesoria"))
+                mod_asesoria_UI(ns("asesoria"))
             )
         )
     )
 }
 
-puntajes_output <- function(id) {
+mod_puntajes_output <- function(id) {
     ns <- shiny::NS(id)
     shiny::tagList(
         shiny::tags$h2("Puntaje obtenido"),
@@ -29,12 +29,12 @@ puntajes_output <- function(id) {
     )
 }
 
-puntajes_Server <- function(id) {
+mod_puntajes_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
         
-        formacion <- formacion_Server("formacion")
-        produccion <- produccion_Server("produccion")
-        asesoria <- asesoria_Server("asesoria")
+        formacion <- mod_formacion_Server("formacion")
+        produccion <- mod_produccion_Server("produccion")
+        asesoria <- mod_asesoria_Server("asesoria")
         
         puntaje_formacion <- shiny::reactive(formacion$puntaje_grado())
         
@@ -86,34 +86,33 @@ puntajes_Server <- function(id) {
         })
         
         output$resultados <- shiny::renderUI({
-            tmp <- data_resultados()
-            tmp <- flextable::flextable(tmp) 
-            tmp <- flextable::theme_box(tmp)  
-            tmp <- flextable::set_table_properties(tmp, layout = "autofit") 
-            tmp <- flextable::htmltools_value(tmp)
-            tmp
+            data_resultados() |> 
+            flextable::flextable() |> 
+            flextable::theme_box()  |> 
+            flextable::set_table_properties(layout = "autofit") |> 
+            flextable::htmltools_value()
         })
         
         output$calificacion <- shiny::renderText(calificacion())
     })
 }
 
-puntajes_App <- function(){
+mod_puntajes_App <- function(){
     ui <- shiny::fluidPage(
         shiny::sidebarLayout(
             shiny::sidebarPanel(
-                puntajes_input("myTestId")
+                mod_puntajes_input("myTestId")
             ),
             shiny::mainPanel(
-                puntajes_output("myTestId")
+                mod_puntajes_output("myTestId")
             )
         )
     )
     
     server <- function(input, output, session) {
-        puntajes_Server("myTestId")
+        mod_puntajes_Server("myTestId")
     }
     shiny::shinyApp(ui, server)
 }
 
-# puntajes_App()
+# mod_puntajes_App()
