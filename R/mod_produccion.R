@@ -1,4 +1,4 @@
-produccion_UI <- function(id) {
+mod_produccion_UI <- function(id) {
     ns <- shiny::NS(id)
     shiny::tagList(
         shiny::tags$h4("B. Artículos científicos en revistas indizadas"),
@@ -41,7 +41,7 @@ produccion_UI <- function(id) {
     )
 }
 
-produccion_Server <- function(id) {
+mod_produccion_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
         
         puntaje_articulos <- shiny::reactive({
@@ -73,16 +73,16 @@ produccion_Server <- function(id) {
     })
 }
 
-produccion_App <- function(){
+mod_produccion_App <- function(){
     ui <- shiny::fluidPage(
-        produccion_UI("myTestId"),
+        mod_produccion_UI("myTestId"),
         shiny::textOutput("test")
     )
     server <- function(input, output, session) {
-        produccion <- produccion_Server("myTestId")
+        produccion <- mod_produccion_Server("myTestId")
         output$test <- shiny::renderText(produccion$puntaje_libros())
     }
     shiny::shinyApp(ui, server)
 }
 
-# produccion_App()
+# mod_produccion_App()
