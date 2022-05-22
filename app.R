@@ -43,17 +43,17 @@ ui <- shiny::navbarPage(
         title = "Calculadora",
         shiny::sidebarLayout(
             shiny::sidebarPanel(
-                puntajes_input("puntajes")
+                mod_puntajes_input("puntajes")
             ),
             shiny::mainPanel(
-                puntajes_output("puntajes")
+                mod_puntajes_output("puntajes")
             )
         )
     )
 )
 
 server <- function(input, output, session) {
-    puntajes_Server("puntajes")
+    mod_puntajes_Server("puntajes")
 }
 
 shiny::shinyApp(ui, server)
