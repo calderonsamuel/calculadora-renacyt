@@ -16,22 +16,12 @@ mod_formacion_UI <- function(id) {
 
 mod_formacion_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
-        puntaje <- shiny::reactive({
-            grado <- input$grado
-            
-            dplyr::case_when(
-                grado == "Doctor" ~ 10,
-                grado == "Magister" ~ 6,
-                grado ==  "Título profesional"~ 4,
-                grado == "Bachiller o egresado" ~ 2,
-                grado == "Constancia de matrícula (Estudiante)" ~ 1,
-                TRUE ~ 0
-                )
-        })
         
         list(
             grado = shiny::reactive(input$grado),
-            puntaje_grado = shiny::reactive(puntaje())
+            puntaje_formacion = shiny::reactive(
+                get_puntaje_formacion(input$grado)
+            )
         )
         
     })
@@ -39,10 +29,12 @@ mod_formacion_Server <- function(id) {
 
 mod_formacion_App <- function(){
     ui <- shiny::fluidPage(
-        mod_formacion_UI("myTestId")
+        mod_formacion_UI("myTestId"),
+        verbatimTextOutput("test")
     )
     server <- function(input, output, session) {
-        mod_formacion_Server("myTestId")
+        puntos <- mod_formacion_Server("myTestId")
+        output$test <- renderPrint(puntos$puntaje_grado())
     }
     shiny::shinyApp(ui, server)
 }
