@@ -36,21 +36,17 @@ mod_puntajes_Server <- function(id) {
         produccion <- mod_produccion_Server("produccion")
         asesoria <- mod_asesoria_Server("asesoria")
         
-        puntaje_formacion <- shiny::reactive(formacion$puntaje_grado())
+        puntaje_formacion <- shiny::reactive(formacion$puntaje_formacion())
+        puntaje_produccion <- shiny::reactive(produccion$puntaje_produccion())
+        puntaje_asesoria <- shiny::reactive(asesoria$puntaje_asesoria())
         
-        puntaje_produccion <- shiny::reactive({
-            articulos <- produccion$puntaje_articulos()
-            patentes <- produccion$puntaje_patentes()
-            libros <- produccion$puntaje_libros()
-            
-            articulos + patentes + libros
-        })
-        
-        puntaje_asesoria <- reactive(asesoria$puntaje_asesoria())
-        
-        puntaje_total <- shiny::reactive(puntaje_formacion() + 
-                                      puntaje_produccion() + 
-                                      puntaje_asesoria())
+        puntaje_total <- shiny::reactive(
+            get_puntaje_total(
+                p_formacion = puntaje_produccion(),
+                p_produccion = puntaje_produccion(),
+                p_asesoria = puntaje_asesoria()
+            )
+        )
         
         data_resultados <- shiny::reactive({
             
@@ -68,20 +64,11 @@ mod_puntajes_Server <- function(id) {
         })
         
         calificacion <- shiny::reactive({
-            dplyr::case_when(
-                puntaje_produccion() == 0 ~ "No califica: Requiere al menos un ítem en Producción",
-                puntaje_formacion() == 1 & puntaje_produccion() < 9 ~ "No califica: Estudiantes requieren 9 en producción",
-                puntaje_formacion() > 1 & puntaje_produccion() < 6  ~ "No califica: Requiere al menos 6 en producción",
-                puntaje_total() < 10 ~ "No califica: Requiere al menos 10 en puntaje total",
-                puntaje_total() <= 24 ~ "Sí califica: Nivel VII",
-                puntaje_total() <= 34 ~ "Sí califica: Nivel VI",
-                puntaje_total() <= 49 ~ "Sí califica: Nivel V",
-                puntaje_total() <= 69 ~ "Sí califica: Nivel IV",
-                puntaje_total() <= 99 ~ "Sí califica: Nivel III",
-                puntaje_total() <= 159 ~ "Sí califica: Nivel II",
-                puntaje_total() <= 199 ~ "Sí califica: Nivel I",
-                produccion$indice_h() == "Sí" ~ "Investigador Distinguido",
-                TRUE ~ "Nivel I"
+            get_calificacion(
+                puntaje_produccion = puntaje_produccion(),
+                puntaje_formacion = puntaje_formacion(),
+                puntaje_total = puntaje_total(),
+                indice_h = produccion$indice_h()
             )
         })
         
