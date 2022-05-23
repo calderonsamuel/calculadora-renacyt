@@ -1,4 +1,5 @@
-# library(shiny)
+library(shiny)
+library(markdown) # tratando de solucionar problema en deploy a shinyapps.io
 # library(tidyverse)
 # library(flextable)
 
