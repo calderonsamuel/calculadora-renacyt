@@ -10,14 +10,17 @@ mod_asesoria_UI <- function(id) {
 
 mod_asesoria_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
-        puntaje_asesoria <- shiny::reactive({
-            puntaje <- (input$doctor * 2) + (input$magister * 1) + (input$bachiller * 0.5)
-            dplyr::if_else(puntaje > 10, 10, as.double(puntaje))
-        })
         
         list(
-            puntaje_asesoria = shiny::reactive(puntaje_asesoria())
+            puntaje_asesoria = shiny::reactive(
+                get_puntaje_asesoria(
+                    n_doct = input$doctor,
+                    n_mag = input$magister,
+                    n_bach = input$bachiller
+                )
+            )
         )
+        
     })
 }
 
