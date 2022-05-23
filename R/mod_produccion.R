@@ -44,29 +44,22 @@ mod_produccion_UI <- function(id) {
 mod_produccion_Server <- function(id) {
     shiny::moduleServer(id, function(input, output, session) {
         
-        puntaje_articulos <- shiny::reactive({
-            q1 <- input$articulos_q1  * 5
-            q2 <- input$articulos_q2  * 4
-            q3 <- input$articulos_q3  * 3
-            q4 <- input$articulos_q4  * 2
-            conference <- dplyr::if_else(input$conference > 10, 10, as.double(input$conference))
-            
-            q1 + q2 + q3 + q4 + conference
-        })
-        
-        puntaje_patentes <- shiny::reactive({
-            (input$patente_invencion * 3) + (input$patente_modelo * 1)
-        }) 
-        
-        puntaje_libros <- shiny::reactive({
-            puntaje <- (input$libros * 2) + (input$capitulos * 1)
-            dplyr::if_else(puntaje > 10, 10, as.double(puntaje))
+        puntaje_produccion <- shiny::reactive({
+            get_puntaje_produccion(
+                q1 = input$articulos_q1,
+                q2 = input$articulos_q2,
+                q3 = input$articulos_q3,
+                q4 = input$articulos_q4, 
+                conf = input$conference,
+                pat_invencion = input$patente_invencion,
+                pat_modelo = input$patente_modelo,
+                n_libros = input$libros, 
+                n_cap = input$capitulos
+            )
         })
         
         list(
-            puntaje_articulos = shiny::reactive(puntaje_articulos()),
-            puntaje_patentes = shiny::reactive(puntaje_patentes()),
-            puntaje_libros = shiny::reactive(puntaje_libros()),
+            puntaje_produccion = shiny::reactive(puntaje_produccion()),
             indice_h = shiny::reactive(input$indice_h)
         )
         
@@ -80,7 +73,7 @@ mod_produccion_App <- function(){
     )
     server <- function(input, output, session) {
         produccion <- mod_produccion_Server("myTestId")
-        output$test <- shiny::renderText(produccion$puntaje_libros())
+        output$test <- shiny::renderText(produccion$puntaje_produccion())
     }
     shiny::shinyApp(ui, server)
 }
