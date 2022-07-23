@@ -42,7 +42,7 @@ mod_puntajes_Server <- function(id) {
         
         puntaje_total <- shiny::reactive(
             get_puntaje_total(
-                p_formacion = puntaje_produccion(),
+                p_formacion = puntaje_formacion(),
                 p_produccion = puntaje_produccion(),
                 p_asesoria = puntaje_asesoria()
             )
